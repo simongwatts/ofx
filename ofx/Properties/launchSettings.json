@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ofx": {
+      "commandName": "Project",
+      "commandLineArgs": "--verbose --temperature 0.8 \"If I have 3 apples and eat 2, how many bananas do I have\""
+    }
+  }
+}
