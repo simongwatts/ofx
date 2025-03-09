@@ -126,6 +126,15 @@ namespace Ofx
     }
 
     #region Support Classes
+    public static class RequestOptionDefaults
+    {
+        public static readonly Dictionary<string, object> Values = new()
+        {
+            ["num_ctx"] = 4096,
+            ["temperature"] = 0.6f
+        };
+    }
+
     public static class AssemblyExtensions
     {
         public static string GetInformationalVersion(this Assembly assembly)
@@ -164,12 +173,6 @@ namespace Ofx
 
     public static class RequestOptionsBuilder
     {
-        private static readonly Dictionary<string, object> _optionDefaults = new()
-        {
-            ["num_ctx"] = 4096,
-            ["temperature"] = 0.6f
-        };
-
         public static IEnumerable<Option> CreateDynamicOptions()
         {
             var options = new List<Option>();
@@ -181,7 +184,7 @@ namespace Ofx
                 if (jsonAttr == null) continue;
 
                 var (description, _) = ParseXmlDocs(contextualProperty);
-                _optionDefaults.TryGetValue(jsonAttr.Name, out var defaultValue);
+                RequestOptionDefaults.Values.TryGetValue(jsonAttr.Name, out var defaultValue);
 
                 var option = CreateOption(
                     contextualProperty,
@@ -305,12 +308,6 @@ namespace Ofx
         Argument<string> promptArgument,
         IEnumerable<Option> requestOptions) : BinderBase<RequestParameters>
     {
-        private static readonly Dictionary<string, object> _optionDefaults = new()
-        {
-            ["num_ctx"] = 4096,
-            ["temperature"] = 0.6f
-        };
-
         protected override RequestParameters GetBoundValue(BindingContext context)
         {
             var parameters = new RequestParameters
@@ -429,7 +426,7 @@ namespace Ofx
                     {
                         value = context.ParseResult.GetValueForOption(option);
                     }
-                    else if (_optionDefaults.TryGetValue(jsonAttr.Name, out var defaultValue))
+                    else if (RequestOptionDefaults.Values.TryGetValue(jsonAttr.Name, out var defaultValue))
                     {
                         value = defaultValue;
                     }
